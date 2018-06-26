@@ -139,7 +139,8 @@
 					$(".random-list").append(random_html);
 				}
 				//计算移动像素
-				var movepx = parseInt($(".random-list").css("top")) - (num * 50);
+				var listtop = $(".random-list").css("top") == 'auto' ? 0 : parseInt($(".random-list").css("top"));
+				var movepx = listtop - (num * 50);
 				//计算移动时间
 				var movetime = num * 100;
 				//动画执行
