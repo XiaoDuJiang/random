@@ -114,15 +114,20 @@
 			listInit(namelist);
 			//随机ul初始化
 			function listInit(list) {
+				var addhtml = "";
 				for(var i in list) {
-					$(".random-list").append('<li>' + list[i] + '</li>');
+					addhtml += '<li>' + list[i] + '</li>';
 				}
+				//避免循环生成性能低 并且影响显示效果
+				$(".random-list").html(addhtml);
 			}
 			//点击抽取事件
 			$("#random").bind("click", randomAnimation);
 
 			//抽取动画
 			function randomAnimation() {
+				//初始化消除remove后再获取html会变得卡顿的bug
+				listInit(namelist);
 				//解绑事件
 				$("#random").unbind("click");
 				$("#random").text("抽取中...");
