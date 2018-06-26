@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>随机抽取</title>
+		<style type="text/css">
+			body {
+				margin: 0;
+				padding: 0;
+				color: white;
+				font-family: Lato, "Microsoft YaHei", sans-serif;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				-webkit-user-select: none;
+			}
+			
+			.bg {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-color: #1ab394;
+			}
+			
+			ul {
+				list-style: none;
+			}
+			
+			.title {
+				font-size: 34px;
+				text-align: center;
+				text-shadow: 1px 2px #22c3aa, 2px 4px #aee2d9;
+				font-weight: bold;
+				letter-spacing: 2px;
+			}
+			
+			.random-box {
+				position: absolute;
+				top: 200px;
+				left: 50%;
+				transform: translateX(-50%);
+			}
+			
+			.random-list {
+				font-size: 26px;
+				line-height: 50px;
+				text-align: center;
+				padding: 0;
+				margin: 0;
+				color: #1ab394;
+				position: relative;
+			}
+			
+			.random-list li {}
+			
+			.show-box {
+				background-color: white;
+				width: 200px;
+				height: 50px;
+				border: 2px solid #E7E7E7;
+				margin: 50px auto 20px auto;
+				overflow: hidden;
+			}
+			
+			.btn {
+				height: 40px;
+				width: 210px;
+				margin: 0 auto;
+				background-color: #008a75;
+				color: white;
+				border-radius: 10px;
+				line-height: 40px;
+				font-size: 26px;
+				text-align: center;
+				cursor: pointer;
+				box-shadow: 1px 1px gray;
+			}
+			
+			.btn:hover,
+			.btn:active {
+				opacity: 0.8;
+			}
+			
+			.btn-active {
+				opacity: 0.8;
+				cursor: auto;
+			}
+			
+			.btn:active {
+				box-shadow: 1px 1px white;
+			}
+		</style>
+	</head>
+
+	<body class="bg">
+
+		<div class="random-box">
+			<div class="title">
+				随机抽取
+			</div>
+			<div class="show-box">
+				<ul class="random-list">
+
+				</ul>
+			</div>
+			<div class="btn" id="random">抽取</div>
+		</div>
+
+		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var namelist = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+
+			//初始化list
+			listInit(namelist);
+			//随机ul初始化
+			function listInit(list) {
+				for(var i in list) {
+					$(".random-list").append('<li>' + list[i] + '</li>');
+				}
+			}
+			//点击抽取事件
+			$("#random").bind("click", randomAnimation);
+
+			//抽取动画
+			function randomAnimation() {
+				//解绑事件
+				$("#random").unbind("click");
+				$("#random").text("抽取中...");
+				$("#random").addClass("btn-active");
+				//首先计算长度
+				var length = $(".random-list li").length;
+				//随机生成一个3倍长度之内的数字
+				var num = 2 * length + Math.floor(Math.random() * length);
+				//计算循环几次
+				var loop = Math.ceil(num / length);
+				//后面加上这么多次
+				var random_html = $(".random-list").html();
+				for(var i = 0; i < loop; i++) {
+					$(".random-list").append(random_html);
+				}
+				//计算移动像素
+				var movepx = parseInt($(".random-list").css("top")) - (num * 50);
+				//计算移动时间
+				var movetime = num * 100;
+				//动画执行
+				$(".random-list").animate({
+					top: movepx
+				}, movetime, function() {
+					//执行完毕后
+					//更改top到第一个
+					var nowtop = parseInt($(".random-list").css("top"));
+					var newtop = nowtop - Math.ceil(nowtop / (length * 50)) * length * 50;
+					$(".random-list").css("top", newtop);
+					//去除后面的li
+					var remove_length = $(".random-list li").length;
+					for(var i = length; i < remove_length; i++) {
+						$(".random-list li").eq(length).remove();
+					}
+					//重新绑定事件
+					setTimeout(function() {
+						$("#random").bind("click", randomAnimation);
+						$("#random").removeClass("btn-active");
+						$("#random").text("抽取");
+					}, 300);
+				});
+
+			}
+		</script>
+	</body>
+
+</html>
